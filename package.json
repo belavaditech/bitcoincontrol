@@ -1,0 +1,24 @@
+{
+  "name": "bitcoincontrol",
+  "version": "1.0.0",
+  "description": "Facility to control bitcoin address transaction",
+  "main": "index.js",
+  "scripts": {
+    "test": "npm test.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/belavaditech/bitcoincontrol.git"
+  },
+  "keywords": [
+    "bitcoin",
+    "control",
+    "device"
+  ],
+  "author": "Belavadi N Ramesh",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/belavaditech/bitcoincontrol/issues"
+  },
+  "homepage": "https://github.com/belavaditech/bitcoincontrol#readme"
+}
