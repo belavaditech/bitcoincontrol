@@ -1,5 +1,5 @@
 bitcoin = require('bitcoinjs-lib');
-types = require('./node_modules/bitcoinjs-lib/src/types');
+//types = require('./node_modules/bitcoinjs-lib/src/types');
 typeforce = require('typeforce');
 var bufferReverse = require('buffer-reverse')
 
@@ -7,7 +7,7 @@ var bufferReverse = require('buffer-reverse')
 
 function getStrControlCodeAddress(code ,network) 
 {
-typeforce(bitcoin.types.String, code);
+typeforce('String', code);
 var pubKeyHash = bitcoin.crypto.hash160(Buffer.from(code));
 var redeemScript =  bitcoin.script.compile([bitcoin.opcodes.OP_HASH160, pubKeyHash, 
 bitcoin.opcodes.OP_EQUAL ]) 
@@ -83,9 +83,31 @@ return tx;
 
 }
 
+// from past transaction you need amount, outscriptPubKey, tx1, indextospemd, sequence
+// your data needed buffer code
+function  getTransactionForunlockStrCode (code,  tx1, indextospend, sequence, outscriptPubKey, amount)
+{
+typeforce('String', code);
+var pubKeyHash = bitcoin.crypto.hash160(code);
+var redeemScript =  bitcoin.script.compile([bitcoin.opcodes.OP_HASH160, pubKeyHash, 
+bitcoin.opcodes.OP_EQUAL ]) 
+
+var allinput = bitcoin.script.compile([code, 
+	redeemScript]);
+var tx = new bitcoin.Transaction ();
+txHash = bufferReverse(new Buffer(tx1, 'hex'))
+
+tx.addInput(txHash, indextospend, sequence, allinput );
+tx.addOutput(outscriptPubKey, amount);
+return tx;
+
+}
+
 module.exports = {
    getCustomContractAddress: getCustomContractAddress,
    getBufControlCodeAddress: getBufControlCodeAddress,
    getStrControlCodeAddress: getStrControlCodeAddress,
-   getTransactionForunlockBufCode : getTransactionForunlockBufCode 
+   getTransactionForunlockBufCode : getTransactionForunlockBufCode, 
+   getTransactionForunlockStrCode : getTransactionForunlockStrCode, 
+   getTransactionForCustomContract : getTransactionForCustomContract 
 }

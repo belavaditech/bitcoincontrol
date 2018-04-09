@@ -20,5 +20,8 @@
   "bugs": {
     "url": "https://github.com/belavaditech/bitcoincontrol/issues"
   },
-  "homepage": "https://github.com/belavaditech/bitcoincontrol#readme"
+  "homepage": "https://github.com/belavaditech/bitcoincontrol#readme",
+  "dependencies": {
+    "bitcoinjs-lib": "^2.3.0"
+  }
 }
