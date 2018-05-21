@@ -1,9 +1,119 @@
+custom = require('./customlib');
+
 bitcoin = require('bitcoinjs-lib');
 //types = require('./node_modules/bitcoinjs-lib/src/types');
 typeforce = require('typeforce');
 var bufferReverse = require('buffer-reverse')
 
+/*
+ clientusage =
+ {
+	percentclientfees: 2, 
+	fixedclientfees: 100,
+        transactionfees: 10, 
+ 	clientaddress: '',
+ }
+ clientreply =
+ {
+	error: '', // userdata not correct
+	msg:'',
+	txid: ''
+ }
 
+ userdata =
+ {
+	amountfortransfer: 2, 
+	useraddress: '',
+        targetaddress: '', 
+ 	balanceinaddress: '',
+ }
+ userreply =
+ {
+	error: '',
+	msg:'',
+	txid: ''
+ }
+
+ contract = 
+ {
+        maxclientfees:'',
+        provideraddress: '',
+        providerfixedfees: '',
+	providerpercentfees: ''
+        maximumvalueallowed: '',
+	minimumvalueallowed: ''
+	
+ }
+
+
+*/
+
+function validateContract(contract, clientusage, network) 
+{
+
+}
+
+function getTransaction(contracted_usage, userdata, network)
+{
+
+}
+
+function doc1Upload(doc_id, doc_type, doc_hash, usagetype,clientdata, network)
+{
+// type 1, hashofdoc is used in raw string
+// type 2, hash of hashofdoc is used in  string
+
+   return tx;
+}
+
+function doc1Check(doc_id, doc_type, doc_hash, usagetype,tx, network)
+{
+// type 1, hashofdoc is used in raw string
+// type 2, hash of hashofdoc is used in  string
+
+   return true;
+}
+
+/*
+creatorstub = {
+ doc_id,
+ doc_type,
+ doc_hash,
+ validatorid: '',
+ validatorkey: ''
+}
+
+validatorstub = {
+ doc_id,
+ doc_type,
+ doc_hash,
+ validatorid: '',
+ validatorkey: ''
+}
+
+
+*/
+
+function doc2Uploadv(creator, usagetype,clientdata,validator, network)
+{
+// type 1, hashofdoc is used in raw string
+
+   return tx;
+}
+
+function doc2Validate(doc_id, doc_type, doc_hash, usagetype,validator, validatorkey, network)
+{
+// type 1, hashofdoc is used in raw string
+// type 2, hash of hashofdoc is used in  string
+
+   return tx;
+}
+function doc2Check(doc_id, doc_type, doc_hash, usagetype,tx,validator, network)
+{
+// type 1, hashofdoc is used in raw string
+// type 2, hash of hashofdoc is used in  string
+
+}
 
 function getStrControlCodeAddress(code ,network) 
 {

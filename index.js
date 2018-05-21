@@ -1,4 +1,4 @@
 module.exports = {
- customlib: require('customlib')
+ customlib: require('./customlib')
 
 }
