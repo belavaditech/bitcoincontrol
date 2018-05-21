@@ -1,4 +1,4 @@
-custom = require('./customlib');
+customlib = require('./customlib');
 
 bitcoin = require('bitcoinjs-lib');
 //types = require('./node_modules/bitcoinjs-lib/src/types');
@@ -6,14 +6,14 @@ typeforce = require('typeforce');
 var bufferReverse = require('buffer-reverse')
 
 /*
- clientusage =
+ partnerusage =
  {
-	percentclientfees: 2, 
-	fixedclientfees: 100,
+	percentpartnerfees: 2, 
+	fixedpartnerfees: 100,
         transactionfees: 10, 
- 	clientaddress: '',
+ 	partneraddress: '',
  }
- clientreply =
+ partnerreply =
  {
 	error: '', // userdata not correct
 	msg:'',
@@ -36,7 +36,7 @@ var bufferReverse = require('buffer-reverse')
 
  contract = 
  {
-        maxclientfees:'',
+        maxpartnerfees:'',
         provideraddress: '',
         providerfixedfees: '',
 	providerpercentfees: ''
@@ -48,28 +48,54 @@ var bufferReverse = require('buffer-reverse')
 
 */
 
-function validateContract(contract, clientusage, network) 
+function validateContract(contract, partnerusage, network) 
 {
 
 }
 
-function getTransaction(contracted_usage, userdata, network)
+function activatedoc1(address, partnerdata ,  network)
 {
+ 	// buildatransaction, broadcast.
 
 }
 
-function doc1Upload(doc_id, doc_type, doc_hash, usagetype,clientdata, network)
+/*
+creatorstub = {
+ doc_id,
+ doc_type,
+ doc_hash,
+}
+
+veriferstub = {
+ doc_id,
+ doc_type,
+ doc_hash,
+}
+
+*/
+
+
+
+function doc1Upload(creatorstub, usagetype, partnerdata, network)
 {
 // type 1, hashofdoc is used in raw string
 // type 2, hash of hashofdoc is used in  string
+  var Pin = JSON.stringify(creatorstub);
+  var Pinkey = Buffer.from(Pin);
 
-   return tx;
+   var docaddr = customlib.getBufControlCodeAddress(Pinkey, uidkey,
+		bitcoin.networks.testnet);
+   console.log("address2 = "+addr2);
+
+   return docaddr;
 }
 
-function doc1Check(doc_id, doc_type, doc_hash, usagetype,tx, network)
+function doc1Check(creatorstub, tx  , usagetype, network)
 {
 // type 1, hashofdoc is used in raw string
 // type 2, hash of hashofdoc is used in  string
+   
+   //return money, to sender after usage
 
    return true;
 }
@@ -94,17 +120,37 @@ validatorstub = {
 
 */
 
-function doc2Uploadv(creator, usagetype,clientdata,validator, network)
+function doc2Uploadv(creatorstub, usagetype, partnerdata, network)
 {
 // type 1, hashofdoc is used in raw string
 
-   return tx;
+  var Pin = JSON.stringify(creatorstub);
+  var Pinkey = Buffer.from(Pin);
+
+  var docaddr = customlib.getBufControlCodeAddress(Pinkey, uidkey,
+		bitcoin.networks.testnet);
+   console.log("address2 = "+addr2);
+
+
+   return docaddr;
 }
 
-function doc2Validate(doc_id, doc_type, doc_hash, usagetype,validator, validatorkey, network)
+function doc2Validate(addr, usagetype,validatorstub, tx, uidkey, network)
 {
 // type 1, hashofdoc is used in raw string
 // type 2, hash of hashofdoc is used in  string
+   // unlock using buffer code
+var tx1 = "52a6d4903cd534b1902fdbe3073b5c983a2f59a5d48dff6211b39fdf5b1bac02";
+var code = keyPair1.getPublicKeyBuffer();
+var indextospend = 0;
+var sequence = 141155;
+var outscriptPubKey = scriptPubKey;
+var amount = 141515;
+var tx = compositekeylib.getTransactionForunlockBufCode (code, uidpubKey,  tx1, indextospend, sequence, outscriptPubKey, amount);
+
+console.log(tx.toHex());
+
+
 
    return tx;
 }
