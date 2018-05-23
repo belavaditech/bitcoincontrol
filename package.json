@@ -1,6 +1,6 @@
 {
   "name": "bitcoincontrol",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Facility to control bitcoin address transaction",
   "main": "index.js",
   "scripts": {
@@ -22,6 +22,7 @@
   },
   "homepage": "https://github.com/belavaditech/bitcoincontrol#readme",
   "dependencies": {
-    "bitcoinjs-lib": "^2.3.0"
+    "bitcoinjs-lib": "^2.3.0",
+    "request": "^2.87.0"
   }
 }

@@ -103,11 +103,115 @@ return tx;
 
 }
 
+
+
+
+function  getAllTransactionForunlockBufCode (code,   alltx, paywhom, network)
+{
+typeforce('Buffer', code);
+var pubKeyHash = bitcoin.crypto.hash160(code);
+var redeemScript =  bitcoin.script.compile([bitcoin.opcodes.OP_HASH160, pubKeyHash, 
+bitcoin.opcodes.OP_EQUAL ]) 
+
+var allinput = bitcoin.script.compile([code, 
+	redeemScript]);
+
+var txb = new bitcoin.TransactionBuilder (network);
+
+console.log("beforInput");
+var hashType = 1 ;
+for(var i=0; i< spendoutlist.length; i++) {
+//txb.addInput(txHash, indextospend, sequence, allinput ); for compare, may be 
+// check if txreverse has to be done
+txb.addInput(spendoutlist[i].tx, spendoutlist[i].index, spendoutlist[i].sequence, allinput);
+}
+
+txb.addOutput(partner.outscriptPubKey, partner.amount);
+txb.addOutput(provider.outscriptPubKey, provider.amount);
+txb.addOutput(target.outscriptPubKey, target.amount);
+txb.addOutput(returnaddr.outscriptPubKey, returnaddr.amount);
+
+// Pay people to be paid
+// balance to same address.  allocation for small fees
+var tx = txb.build();
+
+ return tx;
+
+
+}
+
+function  getAllTransactionForunlockStrCode (code,   alltx, paywhom, network)
+{
+typeforce('String', code);
+var pubKeyHash = bitcoin.crypto.hash160(code);
+var redeemScript =  bitcoin.script.compile([bitcoin.opcodes.OP_HASH160, pubKeyHash, 
+bitcoin.opcodes.OP_EQUAL ]) 
+
+var allinput = bitcoin.script.compile([code, 
+	redeemScript]);
+
+var txb = new bitcoin.TransactionBuilder (globalnetwork);
+
+console.log("beforInput");
+var hashType = 1 ;
+for(var i=0; i< spendoutlist.length; i++) {
+//txb.addInput(txHash, indextospend, sequence, allinput ); for compare, may be 
+// check if txreverse has to be done
+txb.addInput(spendoutlist[i].tx, spendoutlist[i].index, spendoutlist[i].sequence, allinput);
+}
+
+txb.addOutput(partner.outscriptPubKey, partner.amount);
+txb.addOutput(provider.outscriptPubKey, provider.amount);
+txb.addOutput(target.outscriptPubKey, target.amount);
+txb.addOutput(returnaddr.outscriptPubKey, returnaddr.amount);
+
+// Pay people to be paid
+// balance to same address.  allocation for small fees
+var tx = txb.build();
+
+ return tx;
+
+
+}
+
+function  getAllTransactionForCustomContract (contractinput,  redeemScript, alltx, outputs, network)
+{
+var tx = new bitcoin.Transaction ();
+
+
+var allinput = bitcoin.script.compile([contractinput, 
+	redeemScript]);
+var txb = new bitcoin.TransactionBuilder (globalnetwork);
+
+console.log("beforInput");
+var hashType = 1 ;
+for(var i=0; i< spendoutlist.length; i++) {
+//txb.addInput(txHash, indextospend, sequence, allinput ); for compare, may be 
+// check if txreverse has to be done
+txb.addInput(spendoutlist[i].tx, spendoutlist[i].index, spendoutlist[i].sequence, allinput);
+}
+
+txb.addOutput(partner.outscriptPubKey, partner.amount);
+txb.addOutput(provider.outscriptPubKey, provider.amount);
+txb.addOutput(target.outscriptPubKey, target.amount);
+txb.addOutput(returnaddr.outscriptPubKey, returnaddr.amount);
+
+var tx = txb.build();
+
+ return tx;
+
+
+}
+
+
 module.exports = {
    getCustomContractAddress: getCustomContractAddress,
    getBufControlCodeAddress: getBufControlCodeAddress,
    getStrControlCodeAddress: getStrControlCodeAddress,
    getTransactionForunlockBufCode : getTransactionForunlockBufCode, 
    getTransactionForunlockStrCode : getTransactionForunlockStrCode, 
-   getTransactionForCustomContract : getTransactionForCustomContract 
+   getTransactionForCustomContract : getTransactionForCustomContract ,
+   getAllTransactionForunlockBufCode : getAllTransactionForunlockBufCode, 
+   getAllTransactionForunlockStrCode : getAllTransactionForunlockStrCode, 
+   getAllTransactionForCustomContract : getAllTransactionForCustomContract 
 }

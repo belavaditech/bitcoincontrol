@@ -1,4 +1,6 @@
 compositekeylib = require('./compositekeylib');
+request = require('request');
+
 
 bitcoin = require('bitcoinjs-lib');
 //types = require('./node_modules/bitcoinjs-lib/src/types');
@@ -9,6 +11,8 @@ var globalcontract;
 var globalpartnerinfo;
 var globalnetwork;
 
+var globalbalance = 0
+var globalspendabletxs = [];
 /*
  partnerusage =
  {
@@ -59,9 +63,144 @@ function init(contract, partnerinfo, network)
    globalnetwork = network;
 }
 
-function activate(address)
+function determineactivationamount(type, amount, targetaddr, returnaddr)
+{
+   var shares = {
+	partner: {
+	outscriptPubkey:'',
+	amount: ''
+	},
+	provider: {
+	outscriptPubkey:'',
+	amount: ''
+	},
+	target: {
+	outscriptPubkey:'',
+	amount: ''
+	},
+	returnaddr: {
+	outscriptPubkey:'',
+	amount: ''
+	}
+	
+   };
+  return shares;
+}
+
+var url = 'https://api.blockcypher.com/v1/btc/test3/addrs/';
+
+function getbalance (param)
+{
+   request.get(url + param + '/full', function (error, response, body) {
+        if (error) {
+            return callback(error)
+        }
+        if (typeof body === 'string') {
+            body = JSON.parse(body)
+
+         txs = body.txs;
+         globalbalance = 0;
+         globalbalance = body.balance;
+         globalspendabletxs = [];
+         globalspendabletxs = processtx(txs, param);
+
+
+
+        }
+        console.log('Status:', response.statusCode)
+        console.log('Body:', body)
+        return; 
+    });
+
+}
+
+function processtx(globaltxs, address)
+{
+console.log("process");
+
+var spendabletxs = [];
+
+ for(var i=0; i< globaltxs.length; i++)
+        {
+          var txinput_sameaddress = false;
+          var txinput_value = 0;
+          for(var j=0; j< globaltxs[i].inputs.length; j++) {
+                if(globaltxs[i].inputs[j].addresses[0] == address) {
+                        txinput_sameaddress = true;
+                        txinput_value =  globaltxs[i].inputs[j].output_value;
+                }
+          }
+
+
+          for(var j=0; j< globaltxs[i].outputs.length; j++)
+           {
+              if(!globaltxs[i].outputs[j].spent_by)
+             {
+                // we are expecting to spend only this address money
+                // we are expecting only one transaction output we need to spend
+                // This needs change when multiple transaction outputs, need to be spent
+
+                if(globaltxs[i].outputs[j].addresses[0] == address) {
+                console.log("value="+globaltxs[i].outputs[j].value);
+var txout = {
+   index:0,
+   tx: '',
+   value: '',
+   sequence: 0
+};
+
+txout.value = globaltxs[i].outputs[j].value;
+txout.index = j;
+txout.tx = globaltxs[i].hash;
+txout.sequence = globaltxs[i].inputs[0].sequence;
+spendabletxs.push(txout);
+                }
+
+             }
+           }
+        }
+
+
+console.log(spendabletxs);
+ return spendabletxs;
+}
+
+
+function activatetx(targetaddress, activatingkeypair)
 {
  	// buildatransaction, broadcast.
+
+
+    getbalance(activatingkeypair.getAddress());
+
+    var txb = new bitcoin.TransactionBuilder (globalnetwork);
+
+    var hashType = 1 ;
+    var activationshares = determineactivationamount();
+    if(globalbalance == 0)
+    {
+	return; // no money to spend
+    }    
+
+    var spendoutlist = globalspendabletxs;
+	
+    for(var i=0; i< spendoutlist.length; i++) {
+//txb.addInput(txHash, indextospend, sequence, allinput ); for compare, may be 
+// check if txreverse has to be done
+    txb.addInput(spendoutlist[i].tx, spendoutlist[i].index, spendoutlist[i].sequence);
+    }
+
+    txb.addOutput(activationshares.partner.outscriptPubKey, activationshares.partner.amount);
+    txb.addOutput(activationshares.provider.outscriptPubKey, activationshares.provider.amount);
+    txb.addOutput(activationshares.target.outscriptPubKey, activationshares.target.amount);
+    txb.addOutput(activationshares.returnaddr.outscriptPubKey, activationshares.returnaddr.amount);
+
+    for(var i=0; i< spendoutlist.length; i++) {
+	console.log("beforesign " + i);
+	txb.sign(i, activatingkeypair );
+    }
+
+
 
 }
 
@@ -97,12 +236,20 @@ function doc1Upload(creatorstub, uidkey, usagetype  )
    return docaddr;
 }
 
-function doc1Check(creatorstub, tx  , address )
+function doc1Check(creatorstub, tx, address  )
+{
+
+}
+function doc1validate(creatorstub, tx, address )
 {
 // type 1, hashofdoc is used in raw string
 // type 2, hash of hashofdoc is used in  string
    
    //return money, to sender after usage
+   var paytowhom = determinevalidationamount();
+
+   var tx = compositekeylib.getAllTransactionForunlockBufCode(validatorstub, uidkey, alltx, paytowhom, globalnetwork); 
+
 
    return true;
 }
@@ -167,7 +314,7 @@ console.log(tx.toHex());
 
 module.exports = {
    init: init,
-   activate: activate,
+   activatetx: activatetx,
    doc1Upload: doc1Upload,
    doc1Check: doc1Check,
    doc2Uploadv: doc2Uploadv,

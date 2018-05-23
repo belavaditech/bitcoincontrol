@@ -151,13 +151,17 @@ for(var i=0; i< spendoutlist.length; i++) {
 txb.addInput(spendoutlist[i].tx, spendoutlist[i].index, spendoutlist[i].sequence, allinput);
 }
 
-tx.addOutput(partner.outscriptPubKey, partner.amount);
-tx.addOutput(provider.outscriptPubKey, provider.amount);
-tx.addOutput(target.outscriptPubKey, target.amount);
-tx.addOutput(returnaddr.outscriptPubKey, returnaddr.amount);
+txb.addOutput(partner.outscriptPubKey, partner.amount);
+txb.addOutput(provider.outscriptPubKey, provider.amount);
+txb.addOutput(target.outscriptPubKey, target.amount);
+txb.addOutput(returnaddr.outscriptPubKey, returnaddr.amount);
 
 // Pay people to be paid
 // balance to same address.  allocation for small fees
+
+var tx = txb.build();
+
+  return tx;
 
 }
 
@@ -181,13 +185,17 @@ for(var i=0; i< spendoutlist.length; i++) {
 txb.addInput(spendoutlist[i].tx, spendoutlist[i].index, spendoutlist[i].sequence, allinput);
 }
 
-tx.addOutput(partner.outscriptPubKey, partner.amount);
-tx.addOutput(provider.outscriptPubKey, provider.amount);
-tx.addOutput(target.outscriptPubKey, target.amount);
-tx.addOutput(returnaddr.outscriptPubKey, returnaddr.amount);
+txb.addOutput(partner.outscriptPubKey, partner.amount);
+txb.addOutput(provider.outscriptPubKey, provider.amount);
+txb.addOutput(target.outscriptPubKey, target.amount);
+txb.addOutput(returnaddr.outscriptPubKey, returnaddr.amount);
 
 // Pay people to be paid
 // balance to same address.  allocation for small fees
+var tx = txb.build();
+
+  return tx;
+
 
 }
 
@@ -208,10 +216,14 @@ for(var i=0; i< spendoutlist.length; i++) {
 txb.addInput(spendoutlist[i].tx, spendoutlist[i].index, spendoutlist[i].sequence, allinput);
 }
 
-tx.addOutput(partner.outscriptPubKey, partner.amount);
-tx.addOutput(provider.outscriptPubKey, provider.amount);
-tx.addOutput(target.outscriptPubKey, target.amount);
-tx.addOutput(returnaddr.outscriptPubKey, returnaddr.amount);
+txb.addOutput(partner.outscriptPubKey, partner.amount);
+txb.addOutput(provider.outscriptPubKey, provider.amount);
+txb.addOutput(target.outscriptPubKey, target.amount);
+txb.addOutput(returnaddr.outscriptPubKey, returnaddr.amount);
+var tx = txb.build();
+
+  return tx;
+
 
 }
 
@@ -222,5 +234,8 @@ module.exports = {
    getStrControlCodeAddress: getStrControlCodeAddress,
    getTransactionForunlockBufCode : getTransactionForunlockBufCode, 
    getTransactionForunlockStrCode : getTransactionForunlockStrCode, 
-   getTransactionForCustomContract : getTransactionForCustomContract 
+   getTransactionForCustomContract : getTransactionForCustomContract ,
+   getAllTransactionForunlockBufCode : getAllTransactionForunlockBufCode, 
+   getAllTransactionForunlockStrCode : getAllTransactionForunlockStrCode, 
+   getAllTransactionForCustomContract : getAllTransactionForCustomContract 
 }
