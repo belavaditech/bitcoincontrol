@@ -1,5 +1,6 @@
 compositekeylib = require('./compositekeylib');
 request = require('request');
+promise = require('promise');
 
 
 bitcoin = require('bitcoinjs-lib');
@@ -7,7 +8,7 @@ bitcoin = require('bitcoinjs-lib');
 typeforce = require('typeforce');
 var bufferReverse = require('buffer-reverse')
 
-var globalcontract;
+var globalcontractinfo;
 var globalpartnerinfo;
 var globalnetwork;
 
@@ -56,31 +57,34 @@ var globalspendabletxs = [];
 
 */
 
-function init(contract, partnerinfo, network) 
+function init(contractinfo, partnerinfo, network) 
 {
-   globalcontract = contract;
-   globalparnerinfo = partnerinfo;
+   globalcontractinfo = contractinfo;
+   globalpartnerinfo = partnerinfo;
    globalnetwork = network;
 }
 
-function determineactivationamount(type, amount, targetaddr, returnaddr)
+function determineactivationamount(type, amount, balance, targetaddr, returnaddr)
 {
+  var fees = Number(globalpartnerinfo.fees);
+  var amount = Number(amount);
+
    var shares = {
 	partner: {
-	outscriptPubkey:'',
-	amount: ''
+	outscriptPubKey: bitcoin.address.toOutputScript(globalpartnerinfo.partneraddress, globalnetwork),
+	amount: Number((amount * 0.2).toFixed(0))
 	},
 	provider: {
-	outscriptPubkey:'',
-	amount: ''
+	outscriptPubKey: bitcoin.address.toOutputScript(globalcontractinfo.provideraddress, globalnetwork),
+	amount: Number((amount * 0.2).toFixed(0))
 	},
 	target: {
-	outscriptPubkey:'',
-	amount: ''
+	outscriptPubKey: bitcoin.address.toOutputScript(targetaddr, globalnetwork),
+	amount: Number((amount).toFixed(0))
 	},
 	returnaddr: {
-	outscriptPubkey:'',
-	amount: ''
+	outscriptPubKey: bitcoin.address.toOutputScript(returnaddr, globalnetwork),
+	amount: Number((balance-amount- (amount * 0.4) - fees).toFixed(0))
 	}
 	
    };
@@ -91,9 +95,12 @@ var url = 'https://api.blockcypher.com/v1/btc/test3/addrs/';
 
 function getbalance (param)
 {
-   request.get(url + param + '/full', function (error, response, body) {
+
+var promise = new Promise(function (resolve, reject) {
+
+    request.get(url + param + '/full', function (error, response, body) {
         if (error) {
-            return callback(error)
+           reject(error);
         }
         if (typeof body === 'string') {
             body = JSON.parse(body)
@@ -109,9 +116,12 @@ function getbalance (param)
         }
         console.log('Status:', response.statusCode)
         console.log('Body:', body)
-        return; 
+    resolve(body);
+	// return callback(null, body)
     });
+  });
 
+  return promise;
 }
 
 function processtx(globaltxs, address)
@@ -166,22 +176,28 @@ console.log(spendabletxs);
 }
 
 
-function activatetx(targetaddress, activatingkeypair)
+function activatetx(type, amount, targetaddr, activatingkeypair)
 {
  	// buildatransaction, broadcast.
 
 
-    getbalance(activatingkeypair.getAddress());
+var activatepromise = new Promise(function (resolve, reject) {
+    var spendingaddr = activatingkeypair.getAddress() ;
+    var returnaddr = spendingaddr;
+    var promise = getbalance(spendingaddr );
+
+    promise.then(function(notused) {
 
     var txb = new bitcoin.TransactionBuilder (globalnetwork);
 
     var hashType = 1 ;
-    var activationshares = determineactivationamount();
+    var activationshares = determineactivationamount(type, amount, globalbalance, targetaddr, returnaddr)
     if(globalbalance == 0)
     {
-	return; // no money to spend
+	console.log("globalbalance="+globalbalance);
     }    
 
+    console.log("globalbalance="+globalbalance);
     var spendoutlist = globalspendabletxs;
 	
     for(var i=0; i< spendoutlist.length; i++) {
@@ -189,7 +205,7 @@ function activatetx(targetaddress, activatingkeypair)
 // check if txreverse has to be done
     txb.addInput(spendoutlist[i].tx, spendoutlist[i].index, spendoutlist[i].sequence);
     }
-
+    console.log(activationshares);
     txb.addOutput(activationshares.partner.outscriptPubKey, activationshares.partner.amount);
     txb.addOutput(activationshares.provider.outscriptPubKey, activationshares.provider.amount);
     txb.addOutput(activationshares.target.outscriptPubKey, activationshares.target.amount);
@@ -200,7 +216,18 @@ function activatetx(targetaddress, activatingkeypair)
 	txb.sign(i, activatingkeypair );
     }
 
+   var tx = txb.build();
 
+	console.log("looks ok");
+   resolve(tx);
+    }).catch (function(error){
+
+        reject(error);
+	console.log("looks catch ok");
+    });
+  });
+
+  return activatepromise;
 
 }
 

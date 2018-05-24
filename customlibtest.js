@@ -12,6 +12,7 @@ function rng () { return Buffer.from('zzzttyyzzzzzzzzzzzzzzzzzzzzzzzzz') }
   var keyPair = bitcoin.ECPair.makeRandom({ network: bitcoin.networks.testnet, rng: rng })
 
 console.log(keyPair.toWIF());
+console.log(keyPair.getAddress());
 var keyPair1 = bitcoin.ECPair.fromWIF(
 'cRgnQe1TQngWfnsLo9YUExBjx3iVKNHu2ZfiRcUivATuojDdzdus',
  bitcoin.networks.testnet);
