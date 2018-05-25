@@ -66,16 +66,16 @@ function init(contractinfo, partnerinfo, network)
 
 function determineactivationamount(type, amount, balance, targetaddr, returnaddr)
 {
-  var fees = Number(globalpartnerinfo.fees);
+  var fees = Number(globalpartnerinfo.creator.fees);
   var amount = Number(amount);
 
    var shares = {
 	partner: {
-	outscriptPubKey: bitcoin.address.toOutputScript(globalpartnerinfo.partneraddress, globalnetwork),
+	outscriptPubKey: bitcoin.address.toOutputScript(globalpartnerinfo.creator.partneraddress, globalnetwork),
 	amount: Number((amount * 0.2).toFixed(0))
 	},
 	provider: {
-	outscriptPubKey: bitcoin.address.toOutputScript(globalcontractinfo.provideraddress, globalnetwork),
+	outscriptPubKey: bitcoin.address.toOutputScript(globalcontractinfo.creator.provideraddress, globalnetwork),
 	amount: Number((amount * 0.2).toFixed(0))
 	},
 	target: {
@@ -85,6 +85,26 @@ function determineactivationamount(type, amount, balance, targetaddr, returnaddr
 	returnaddr: {
 	outscriptPubKey: bitcoin.address.toOutputScript(returnaddr, globalnetwork),
 	amount: Number((balance-amount- (amount * 0.4) - fees).toFixed(0))
+	}
+	
+   };
+  return shares;
+}
+
+
+function determinevalidationamount(type, balance)
+{
+  var fees = Number(globalpartnerinfo.validator.fees);
+  var balance = Number(balance);
+
+   var shares = {
+	partner: {
+	outscriptPubKey: bitcoin.address.toOutputScript(globalpartnerinfo.validator.partneraddress, globalnetwork),
+	amount: Number((balance * 0.2).toFixed(0))
+	},
+	provider: {
+	outscriptPubKey: bitcoin.address.toOutputScript(globalcontractinfo.validator.provideraddress, globalnetwork),
+	amount: Number((balance- (balance * 0.2) - fees).toFixed(0))
 	}
 	
    };
@@ -267,18 +287,52 @@ function doc1Check(creatorstub, tx, address  )
 {
 
 }
-function doc1validate(creatorstub, tx, address )
+
+
+function doc1Validate(creatorstub, uidkey, address )
 {
 // type 1, hashofdoc is used in raw string
 // type 2, hash of hashofdoc is used in  string
    
    //return money, to sender after usage
-   var paytowhom = determinevalidationamount();
+    var Pin = JSON.stringify(creatorstub);
+   var Pinkey = Buffer.from(Pin);
+ 
+    var docaddr = compositekeylib.getBufControlCodeAddress(Pinkey,
+                 uidkey,
+                 globalnetwork);
 
-   var tx = compositekeylib.getAllTransactionForunlockBufCode(validatorstub, uidkey, alltx, paytowhom, globalnetwork); 
+ var type = 1;
+   var paytowhom = determinevalidationamount(type, globalbalance)
 
+var activatepromise = new Promise(function (resolve, reject) {
+     var promise = getbalance(docaddr );
+ 
+     promise.then(function(notused) {
+ 
+     var spendoutlist = globalspendabletxs;
+ 
+ 
+     console.log("globalbalance="+globalbalance);
+     var spendoutlist = globalspendabletxs;
 
-   return true;
+   if(globalbalance > 100) {
+   var tx = compositekeylib.getAllTransactionForunlockBufCode(Pinkey, uidkey, spendoutlist, paytowhom, globalnetwork); 
+
+   resolve(tx);
+   }
+    else{
+     resolve(0);
+    }
+    }).catch (function(error){
+
+        reject(error);
+	console.log("looks catch ok");
+    });
+  });
+
+  return activatepromise;
+
 }
 
 /*
@@ -343,7 +397,7 @@ module.exports = {
    init: init,
    activatetx: activatetx,
    doc1Upload: doc1Upload,
-   doc1Check: doc1Check,
+   doc1Validate: doc1Validate,
    doc2Uploadv: doc2Uploadv,
    doc2Validate: doc2Validate
 }

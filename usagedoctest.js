@@ -29,7 +29,7 @@ console.log(activatingkeypair.toWIF());
 var uidkey = Buffer.from('a1');
 
 var usagetype = 1; // doc in composite-key 
-usage.init(contractinfo.contract, partnerinfo.partner, network);
+usage.init(contractinfo, partnerinfo, network);
 
 var address = usage.doc1Upload(creatorstub, uidkey, usagetype );
 
@@ -42,6 +42,17 @@ var txpromise = usage.activatetx(usagetype, amount, address, activatingkeypair);
   console.log(error);
 });;
 
+var txpromise = usage.doc1Validate(creatorstub, uidkey, address);
+ txpromise.then(function(tx) {
+  if(tx != 0)
+    console.log(tx.toHex());
+  else {  
+     console.log("no balance to withdraw");
+   }
+ }).catch (function(error){
+
+  console.log(error);
+});;
 //var beforebalance = usage.balance(address);
 // var found = usage.doc1Check(creatorstub, tx, address);
 

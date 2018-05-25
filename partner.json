@@ -1,12 +1,20 @@
 
 {
-        "partner": {
+        "creator": {
+        "partneraddress":"mfhfG8BiHjMzmJoyeXavTUmSUxRAdpQ7Ce",
+        "partnerid": "",
+        "schemeid": "",
+        "fees": "10",
+        "partnershare": ""
+        },
+        "validator": {
         "partneraddress":"mfhfG8BiHjMzmJoyeXavTUmSUxRAdpQ7Ce",
         "partnerid": "",
         "schemeid": "",
         "fees": "10",
         "partnershare": ""
         }
+        
         
 
    }

@@ -131,7 +131,7 @@ return tx;
 }
 
 
-function  getAllTransactionForunlockBufCode (code,uidkey,   alltx, paywhom, network)
+function  getAllTransactionForunlockBufCode (code,uidkey,   spendoutlist, paywhom, network)
 {
 typeforce('Buffer', code);
 var pubKeyHash = bitcoin.crypto.hash160(code);
@@ -151,10 +151,10 @@ for(var i=0; i< spendoutlist.length; i++) {
 txb.addInput(spendoutlist[i].tx, spendoutlist[i].index, spendoutlist[i].sequence, allinput);
 }
 
-txb.addOutput(partner.outscriptPubKey, partner.amount);
-txb.addOutput(provider.outscriptPubKey, provider.amount);
-txb.addOutput(target.outscriptPubKey, target.amount);
-txb.addOutput(returnaddr.outscriptPubKey, returnaddr.amount);
+txb.addOutput(paywhom.partner.outscriptPubKey, paywhom.partner.amount);
+txb.addOutput(paywhom.provider.outscriptPubKey, paywhom.provider.amount);
+//txb.addOutput(target.outscriptPubKey, target.amount);
+//txb.addOutput(returnaddr.outscriptPubKey, returnaddr.amount);
 
 // Pay people to be paid
 // balance to same address.  allocation for small fees
