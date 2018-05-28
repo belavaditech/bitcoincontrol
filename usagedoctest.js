@@ -1,5 +1,5 @@
 bitcoin = require('bitcoinjs-lib');
-usage = require('./usagelib');
+usage = require('./usagedoclib');
 contractinfo = require('./contract.json');
 partnerinfo = require('./partner.json');
 bufferReverse = require('buffer-reverse')
@@ -26,7 +26,7 @@ console.log(activatingkeypair.toWIF());
 
 
 
-var uidkey = Buffer.from('a1');
+var uidkey = Buffer.from('a56677b666c88777a1');
 
 var usagetype = 1; // doc in composite-key 
 usage.init(contractinfo, partnerinfo, network);
@@ -37,8 +37,13 @@ var amount = 2000;
 var txpromise = usage.activatetx(usagetype, amount, address, activatingkeypair); // -> popup for partner to send money, amount
  txpromise.then(function(tx) {
   console.log(tx.toHex());
- }).catch (function(error){
+  usage.sendtx(tx).then(function(tx1) {
 
+  console.log("sending=", JSON.stringify(tx1));
+ }).catch (function(error){
+  console.log(error);
+ });
+ }).catch (function(error){
   console.log(error);
 });;
 
@@ -53,6 +58,20 @@ var txpromise = usage.doc1Validate(creatorstub, uidkey, address);
 
   console.log(error);
 });;
+
+
+var txcheckpromise = usage.doc1Checktx(creatorstub, uidkey, tx);
+ txcheckpromise.then(function(tx) {
+  if(tx == true)
+    console.log("Transaction exists"); 
+  else {  
+    console.log("Transaction does not exist"); 
+   }
+ }).catch (function(error){
+
+  console.log(error);
+});;
+//var beforebalance = usage.balance(address);
 //var beforebalance = usage.balance(address);
 // var found = usage.doc1Check(creatorstub, tx, address);
 
