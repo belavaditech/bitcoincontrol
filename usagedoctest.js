@@ -59,7 +59,15 @@ var txpromise = usage.doc1Validate(creatorstub, uidkey, address);
   console.log(error);
 });;
 
+var checkaddr= usage.doc1CheckAddr(creatorstub, uidkey, address);
+  if(checkaddr == true)
+    console.log("Address exists"); 
+  else {  
+    console.log("Address does not exist"); 
+   }
 
+
+var tx = "232dbdfb84a4d79af6bbbc8c6b8db06f67e7ad30918a9591617bb0b279e2c866";
 var txcheckpromise = usage.doc1Checktx(creatorstub, uidkey, tx);
  txcheckpromise.then(function(tx) {
   if(tx == true)

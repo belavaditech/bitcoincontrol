@@ -135,7 +135,6 @@ var promise = new Promise(function (resolve, reject) {
 
 
         }
-        console.log('Status:', response.statusCode)
     resolve(globalspendabletxs);
 	// return callback(null, body)
     });
@@ -154,17 +153,14 @@ var promise = new Promise(function (resolve, reject) {
         if (error) {
            reject(error);
         }
-        if (typeof body === 'string') {
             body = JSON.parse(body)
         console.log('Body:', body)
 
 	 var txs = body.txs;
-         status = checkiftransactionexists(txs, tx);
+         var status = checkiftransactionexists(txs, tx);
 
 
 
-        }
-        console.log('Status:', response.statusCode)
     resolve(status);
 	// return callback(null, body)
     });
@@ -324,7 +320,7 @@ function doc1Upload(creatorstub, uidkey, usagetype  )
 
    return docaddr;
 }
-function doc1CheckAddr(creatorstub, tx, address  )
+function doc1CheckAddr(creatorstub, uidkey, address  )
 {
 
 
@@ -361,7 +357,6 @@ var checkingpromise = new Promise(function (resolve, reject) {
 
 
    resolve(existsornot);
-   }
     }).catch (function(error){
 
         reject(error);
