@@ -34,9 +34,8 @@ var argv = process.argv;
   secret:   { required: false , short: 'se', default: '' },
   };
 
-if(argv.length < 7)
+if(argv.length < 5)
 {
-  error();
 console.log("node argsdoclib.js --doccontrol --base \'{\"name\":\"bob\", \"age\":50} ' --secret \'{\"name\":false, \"age\":true} \' ");
   options.help(opts);
   process.exit(1);
@@ -44,7 +43,12 @@ console.log("node argsdoclib.js --doccontrol --base \'{\"name\":\"bob\", \"age\"
 
 function error()
 {
-//  process.exit(1);
+  if(argv.length <7)
+  {
+console.log("node argsdoclib.js --doccontrol --base \'{\"name\":\"bob\", \"age\":50} ' --secret \'{\"name\":false, \"age\":true} \' ");
+  options.help(opts);
+  process.exit(1);
+  }
 }
 
 var result = options.parse(opts, argv, error
