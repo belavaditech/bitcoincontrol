@@ -13,42 +13,40 @@ var creatorstub = {
  doc_hash: '262772827acb72727'
 }
 
-var errorMessage = "Error";
-options.type.int(errorMessage);
 var argv = process.argv;
-  console.log("length="+argv.length);
+
+// Below options will create metadata, servercontrol, clientcontrol
+
+// metadata will be used to program client
+// dynamic clientcontrol, used as input
+
  var opts = {
-  user:  { required: true },
-  all:   { short: 'a', flag: true }
+  doccontrol:  { required: true },
+  base:   { required: true , short: 'ba', default: '' },
+  contractfile:   { required: false , short: 'co', default: 'contractfile' },
+  vendorfile:   { required: false , short: 've', default: 'vendorfile' },
+  serverfile:   { required: false , short: 'sf', default: 'serverfile' },
+  clientfile:   { required: false , short: 'cf', default: 'clientfile' },
+  metafile:   { required: false , short: 'mf', default: 'metafile' },
+  encryption:   { required: false , short: 'en', default: '2' },
+  secret:   { required: false , short: 'se', default: '' },
   };
 
 if(argv.length < 3)
 {
-  console.log("error");
+  console.log("-doccontrol -base=\"{name:'bob', age:'50'}\" -secret=\"{}\" ");
   options.help(opts);
   process.exit(1);
 }
-function errorfunc()
+
+function error()
 {
 }
 
-var result = options.parse({
-  user:  { required: true },
-  all:   { short: 'a', flag: true },
-  host:  { short: 'h', default: 'localhost' },
-  input: { short: 'i', multi: true },
-  r:     { flag: true },
-  db:    { default: 'test' },
-  out:   { short: 'o', type: options.type.file.open.write() },
-  help: {
-    short: 'h',
-    help: 'this help screen',
-    showHelp: { 
-      banner: 'options-parser example: [options]'
-    }
-  }
-}, argv, this.errorfunc);
+var result = options.parse(opts, argv, error
+);
  
 
 console.log(result);
 
+console.log("qorking");
