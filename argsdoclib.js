@@ -13,6 +13,8 @@ var creatorstub = {
  doc_hash: '262772827acb72727'
 }
 
+//console.log(JSON.stringify(creatorstub));
+
 var argv = process.argv;
 
 // Below options will create metadata, servercontrol, clientcontrol
@@ -32,21 +34,26 @@ var argv = process.argv;
   secret:   { required: false , short: 'se', default: '' },
   };
 
-if(argv.length < 3)
+if(argv.length < 7)
 {
-  console.log("-doccontrol -base=\"{name:'bob', age:'50'}\" -secret=\"{}\" ");
+  error();
+console.log("node argsdoclib.js --doccontrol --base \'{\"name\":\"bob\", \"age\":50} ' --secret \'{\"name\":false, \"age\":true} \' ");
   options.help(opts);
   process.exit(1);
 }
 
 function error()
 {
+//  process.exit(1);
 }
 
 var result = options.parse(opts, argv, error
 );
  
 
-console.log(result);
+//console.log(result);
+var base = JSON.parse(result.opt.base) ;
+var secret = JSON.parse(result.opt.secret) ;
+console.log(base.name);
+console.log(secret.name);
 
-console.log("qorking");
