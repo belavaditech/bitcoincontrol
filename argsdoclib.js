@@ -58,6 +58,7 @@ if(contractfile)
 var cont = require('./'+contractfile);
 console.log(JSON.stringify(cont));
 writedata(result.opt.serverfile, cont);
+writedata(result.opt.clientfile, cont);
 }
 
 var vendorfile = result.opt.vendorfile;

@@ -22,7 +22,9 @@
   },
   "homepage": "https://github.com/belavaditech/bitcoincontrol#readme",
   "dependencies": {
+    "args-parser": "^1.1.0",
     "bitcoinjs-lib": "^2.3.0",
+    "options-parser": "^0.4.0",
     "promise": "^8.0.1",
     "request": "^2.87.0"
   }
