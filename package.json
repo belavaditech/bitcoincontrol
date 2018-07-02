@@ -1,6 +1,6 @@
 {
   "name": "bitcoincontrol",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Facility to control bitcoin address transaction",
   "main": "index.js",
   "scripts": {

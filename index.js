@@ -1,4 +1,6 @@
 module.exports = {
- customlib: require('./customlib')
-
+ customlib: require('./src/customlib'),
+ customkeylib: require('./src/customkeylib'),
+ usagedoclib: require('./src/usagedoclib'),
+ argsdoclib: require('./src/argsdoclib')
 }
